@@ -17,10 +17,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/?auth_error=server_config", req.url));
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-
-  const redirectUri = `${baseUrl}/api/auth/callback`;
+  const host = req.headers.get("host") || "localhost:3000";
+  const protocol = req.headers.get("x-forwarded-proto") || "https";
+  const redirectUri = `${protocol}://${host}/api/auth/callback`;
 
   try {
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {

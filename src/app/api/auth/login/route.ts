@@ -1,15 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   if (!clientId) {
     return NextResponse.json({ error: "GOOGLE_CLIENT_ID not configured" }, { status: 500 });
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-
-  const redirectUri = `${baseUrl}/api/auth/callback`;
+  const host = req.headers.get("host") || "localhost:3000";
+  const protocol = req.headers.get("x-forwarded-proto") || "https";
+  const redirectUri = `${protocol}://${host}/api/auth/callback`;
 
   const state = crypto.randomUUID();
   const nonce = crypto.randomUUID();
