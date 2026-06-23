@@ -9,8 +9,7 @@ import {
 } from "react";
 import {
   onAuthStateChanged,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   signOut,
   GoogleAuthProvider,
   type User,
@@ -45,16 +44,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const { auth, db } = getFirebaseApp();
     if (!auth || !db) { setLoading(false); return; }
-
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result?.user) {
-          console.log("Redirect sign-in successful", result.user.email);
-        }
-      })
-      .catch((e) => {
-        console.error("Redirect result error:", e);
-      });
 
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
@@ -96,10 +85,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
+      await signInWithPopup(auth, provider);
     } catch (e: any) {
       console.error("Sign-in error:", e);
-      alert("Sign-in failed: " + (e?.message || "Unknown error"));
+      if (e?.code === "auth/popup-blocked") {
+        alert("Popup blocked! Please allow popups for this site:\n\nClick the 🔒 or ⓘ icon in the URL bar → Site settings → Pop-ups → Allow\nThen try again.");
+      } else if (e?.code === "auth/unauthorized-domain") {
+        alert("This domain is not authorized. Add it in Firebase Console > Authentication > Settings > Authorized domains.");
+      } else if (e?.code === "auth/operation-not-allowed") {
+        alert("Google sign-in is not enabled. Enable it in Firebase Console > Authentication > Sign-in method.");
+      } else {
+        alert("Sign-in failed: " + (e?.message || "Unknown error"));
+      }
     }
   };
 
