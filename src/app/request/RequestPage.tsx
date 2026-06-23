@@ -39,11 +39,11 @@ export function RequestPage() {
         const since = Date.now() - 24 * 60 * 60 * 1000;
         const q = query(
           collection(db, "conversations"),
-          where("clientEmail", "==", email),
-          where("createdAt", ">=", since)
+          where("clientEmail", "==", email)
         );
         const snap = await getDocs(q);
-        if (!snap.empty) {
+        const hasRecent = snap.docs.some((d) => d.data().createdAt >= since);
+        if (hasRecent) {
           setError("You can only send one request per day. Please wait 24 hours.");
           setSubmitting(false);
           return;
