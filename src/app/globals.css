@@ -7,15 +7,14 @@
   --font-mono: "Geist Mono", ui-monospace, monospace;
 }
 
-@layer utilities {
-  .bg-grid {
-    background-image: linear-gradient(rgba(99,102,241,.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(99,102,241,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-  .bg-glow {
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,.12), transparent);
-  }
+.bg-grid {
+  background-image: linear-gradient(rgba(99,102,241,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-glow {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,.12), transparent);
 }
 
 @media (prefers-color-scheme: dark) {
