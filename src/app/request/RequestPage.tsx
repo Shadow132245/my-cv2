@@ -10,7 +10,7 @@ import { Input, TextArea } from "@/components/ui/Input";
 import { FadeIn } from "@/components/ui/FadeIn";
 
 export function RequestPage() {
-  const { user, signInWithGoogle, loading: authLoading } = useAuth();
+  const { user, isAdmin, signInWithGoogle, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -35,17 +35,19 @@ export function RequestPage() {
 
     setSubmitting(true);
     try {
-      const since = Date.now() - 24 * 60 * 60 * 1000;
-      const q = query(
-        collection(db, "conversations"),
-        where("clientEmail", "==", email),
-        where("createdAt", ">=", since)
-      );
-      const snap = await getDocs(q);
-      if (!snap.empty) {
-        setError("You can only send one request per day. Please wait 24 hours.");
-        setSubmitting(false);
-        return;
+      if (!isAdmin) {
+        const since = Date.now() - 24 * 60 * 60 * 1000;
+        const q = query(
+          collection(db, "conversations"),
+          where("clientEmail", "==", email),
+          where("createdAt", ">=", since)
+        );
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          setError("You can only send one request per day. Please wait 24 hours.");
+          setSubmitting(false);
+          return;
+        }
       }
 
       const docRef = await addDoc(collection(db, "conversations"), {
