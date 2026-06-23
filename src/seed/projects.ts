@@ -19,8 +19,12 @@ export const seedProjects: Omit<Project, "id">[] = [
       "Tailwind CSS",
     ],
     images: [],
-    githubUrl: "",
+    githubUrl: "https://github.com/Shadow132245",
     liveUrl: "",
+    downloads: [
+      { label: "Windows 64-bit", url: "https://www.mediafire.com/file/tavnk1u00sye7sk/OtpVault_0.1.0_x64_en-US.msi/file" },
+      { label: "Windows 32-bit", url: "https://www.mediafire.com/file/e6ewbs4q4qp4sxy/OtpVault_0.1.0_x86_en-US.msi/file" },
+    ],
     category: "Desktop",
     featured: true,
     order: 1,
@@ -31,9 +35,9 @@ export const seedProjects: Omit<Project, "id">[] = [
     title: "The Last Peace of Art",
     slug: "the-last-peace-of-art",
     description:
-      "A full-stack web application built with Next.js 16, featuring authentication, internationalization, and a modern tech stack.",
+      "A full-stack bilingual web application built with Next.js 16, featuring Google authentication, Prisma ORM, PostgreSQL, and internationalization (Arabic/English).",
     longDescription:
-      "A full-stack web application showcasing modern web development practices. Built with Next.js 16 App Router, Prisma ORM with PostgreSQL, better-auth for authentication, next-intl for bilingual support (Arabic/English), and deployed on Vercel. Features include server-side rendering, API routes, database migrations, and comprehensive testing with Vitest and Playwright.",
+      "A full-stack web application showcasing modern web development practices. Built with Next.js 16 App Router, Prisma ORM with PostgreSQL, better-auth for Google authentication, next-intl for full bilingual support (Arabic/English), and deployed on Vercel. Features include server-side rendering, API routes, database migrations, responsive design, and comprehensive testing with Vitest and Playwright.",
     techStack: [
       "Next.js",
       "TypeScript",
@@ -44,8 +48,8 @@ export const seedProjects: Omit<Project, "id">[] = [
       "Vercel",
     ],
     images: [],
-    githubUrl: "",
-    liveUrl: "",
+    githubUrl: "https://github.com/Shadow132245",
+    liveUrl: "https://lastpeace.vercel.app/",
     category: "Web",
     featured: true,
     order: 2,

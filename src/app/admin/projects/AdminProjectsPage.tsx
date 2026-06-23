@@ -24,7 +24,6 @@ export function AdminProjectsPage() {
   const [editing, setEditing] = useState<Project | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  // Form state
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
@@ -33,6 +32,7 @@ export function AdminProjectsPage() {
   const [images, setImages] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
   const [liveUrl, setLiveUrl] = useState("");
+  const [downloads, setDownloads] = useState<string>("");
   const [category, setCategory] = useState("Web");
   const [featured, setFeatured] = useState(false);
   const [order, setOrder] = useState(0);
@@ -52,33 +52,21 @@ export function AdminProjectsPage() {
   }, [isAdmin]);
 
   const resetForm = () => {
-    setTitle("");
-    setSlug("");
-    setDescription("");
-    setLongDescription("");
-    setTechStack("");
-    setImages("");
-    setGithubUrl("");
-    setLiveUrl("");
-    setCategory("Web");
-    setFeatured(false);
-    setOrder(0);
-    setEditing(null);
+    setTitle(""); setSlug(""); setDescription(""); setLongDescription("");
+    setTechStack(""); setImages(""); setGithubUrl(""); setLiveUrl("");
+    setDownloads("");
+    setCategory("Web"); setFeatured(false); setOrder(0); setEditing(null);
   };
 
   const openEdit = (p: Project) => {
     setEditing(p);
-    setTitle(p.title);
-    setSlug(p.slug);
-    setDescription(p.description);
+    setTitle(p.title); setSlug(p.slug); setDescription(p.description);
     setLongDescription(p.longDescription || "");
     setTechStack(p.techStack.join(", "));
     setImages(p.images.join("\n"));
-    setGithubUrl(p.githubUrl || "");
-    setLiveUrl(p.liveUrl || "");
-    setCategory(p.category);
-    setFeatured(p.featured);
-    setOrder(p.order);
+    setGithubUrl(p.githubUrl || ""); setLiveUrl(p.liveUrl || "");
+    setDownloads(p.downloads?.map((d) => `${d.label}|${d.url}`).join("\n") || "");
+    setCategory(p.category); setFeatured(p.featured); setOrder(p.order);
     setShowForm(true);
   };
 
@@ -88,17 +76,15 @@ export function AdminProjectsPage() {
     setSaving(true);
 
     const data = {
-      title,
-      slug,
-      description,
-      longDescription,
+      title, slug, description, longDescription,
       techStack: techStack.split(",").map((s) => s.trim()).filter(Boolean),
       images: images.split("\n").map((s) => s.trim()).filter(Boolean),
-      githubUrl,
-      liveUrl,
-      category,
-      featured,
-      order: Number(order),
+      githubUrl, liveUrl,
+      downloads: downloads.split("\n").filter(Boolean).map((line) => {
+        const [label, url] = line.split("|");
+        return { label: label?.trim() || "", url: url?.trim() || "" };
+      }).filter((d) => d.label && d.url),
+      category, featured, order: Number(order),
       updatedAt: Date.now(),
     };
 
@@ -108,13 +94,9 @@ export function AdminProjectsPage() {
       if (editing) {
         await updateDoc(doc(db, "projects", editing.id), data);
       } else {
-        await addDoc(collection(db, "projects"), {
-          ...data,
-          createdAt: Date.now(),
-        });
+        await addDoc(collection(db, "projects"), { ...data, createdAt: Date.now() });
       }
-      resetForm();
-      setShowForm(false);
+      resetForm(); setShowForm(false);
       const q = query(collection(db, "projects"), orderBy("order", "asc"));
       const snap = await getDocs(q);
       const list: Project[] = [];
@@ -161,6 +143,7 @@ export function AdminProjectsPage() {
           <TextArea label="Image URLs (one per line)" value={images} onChange={(e) => setImages(e.target.value)} />
           <Input label="GitHub URL" value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} />
           <Input label="Live URL" value={liveUrl} onChange={(e) => setLiveUrl(e.target.value)} />
+          <TextArea label="Downloads (one per line: Label|URL)" value={downloads} onChange={(e) => setDownloads(e.target.value)} placeholder="Windows 64-bit|https://..." />
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
             Featured project
@@ -185,7 +168,7 @@ export function AdminProjectsPage() {
           </div>
         ))}
         {projects.length === 0 && (
-          <p className="text-center text-gray-500 py-8">No projects yet. Add your first project!</p>
+          <p className="text-center text-gray-500 py-8">No projects yet.</p>
         )}
       </div>
     </div>

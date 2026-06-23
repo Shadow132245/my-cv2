@@ -24,13 +24,13 @@ export function Footer() {
           <div>
             <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Contact</h4>
             <div className="flex flex-col gap-1 text-sm text-gray-500 dark:text-gray-400">
-              <a href="mailto:hassan@example.com" className="hover:text-indigo-600">hassan@example.com</a>
-              <a href="https://github.com/hassan" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600">GitHub</a>
+              <a href="mailto:fghfghffdgfhfgh@gmail.com" className="hover:text-indigo-600">fghfghffdgfhfgh@gmail.com</a>
+              <a href="https://github.com/Shadow132245" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600">GitHub</a>
             </div>
           </div>
         </div>
         <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800 text-center text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} Hassan. All rights reserved.
+          &copy; {new Date().getFullYear()} Shadow132245. All rights reserved.
         </div>
       </div>
     </footer>

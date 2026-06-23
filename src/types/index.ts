@@ -8,6 +8,7 @@ export interface Project {
   images: string[];
   githubUrl: string;
   liveUrl: string;
+  downloads?: { label: string; url: string }[];
   category: string;
   featured: boolean;
   order: number;
