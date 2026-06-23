@@ -9,7 +9,7 @@ import {
 } from "react";
 import {
   onAuthStateChanged,
-  signInWithPopup,
+  signInWithRedirect,
   signOut,
   GoogleAuthProvider,
   type User,
@@ -90,18 +90,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      await signInWithRedirect(auth, provider);
     } catch (e: any) {
       console.error("Sign-in error:", e);
-      if (e?.code === "auth/popup-blocked") {
-        alert("Popup was blocked by your browser. Please allow popups for this site.");
-      } else if (e?.code === "auth/unauthorized-domain") {
-        alert("This domain is not authorized in Firebase. Add it in Firebase Console > Authentication > Settings > Authorized domains.");
-      } else if (e?.code === "auth/operation-not-allowed") {
-        alert("Google sign-in is not enabled. Enable it in Firebase Console > Authentication > Sign-in method.");
-      } else {
-        alert("Sign-in failed: " + (e?.message || "Unknown error"));
-      }
+      alert("Sign-in failed: " + (e?.message || "Unknown error"));
     }
   };
 
