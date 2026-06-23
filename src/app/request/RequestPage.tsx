@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { getFirebaseApp } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
@@ -35,6 +35,19 @@ export function RequestPage() {
 
     setSubmitting(true);
     try {
+      const since = Date.now() - 24 * 60 * 60 * 1000;
+      const q = query(
+        collection(db, "conversations"),
+        where("clientEmail", "==", email),
+        where("createdAt", ">=", since)
+      );
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        setError("You can only send one request per day. Please wait 24 hours.");
+        setSubmitting(false);
+        return;
+      }
+
       const docRef = await addDoc(collection(db, "conversations"), {
         clientId: user?.uid || "anonymous",
         clientName: name,

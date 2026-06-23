@@ -42,16 +42,20 @@ export function ChatListPage() {
       </FadeIn>
 
       {loading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-20 rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse"
-            />
-          ))}
+        <div className="text-center py-16 text-gray-400">
+          {conversations.length === 0 ? (
+            <p>No conversations yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-20 rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              ))}
+            </div>
+          )}
         </div>
       ) : conversations.length === 0 ? (
         <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-800/50">
+          <svg className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
           <p className="text-gray-500 dark:text-gray-400 mb-4">No conversations yet.</p>
           <Link href="/request">
             <Button>Start a Project Request</Button>

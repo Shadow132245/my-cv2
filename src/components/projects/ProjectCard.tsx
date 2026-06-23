@@ -18,7 +18,7 @@ export function ProjectCard({ project, index = 0 }: { project: Project; index?: 
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group block rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 bg-white dark:bg-gray-900"
+      className="group block rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 bg-white dark:bg-gray-900"
     >
       <div className={`aspect-video bg-gradient-to-br ${gradient} flex items-center justify-center relative overflow-hidden`}>
         {project.images[0] ? (
@@ -33,19 +33,20 @@ export function ProjectCard({ project, index = 0 }: { project: Project; index?: 
           </span>
         )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer pointer-events-none" />
       </div>
       <div className="p-5">
-        <h3 className="font-semibold text-lg group-hover:text-indigo-600 transition-colors">
+        <h3 className="font-semibold text-lg group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
           {project.title}
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5 line-clamp-2 leading-relaxed">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5 line-clamp-2 leading-relaxed group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-200">
           {project.description}
         </p>
         <div className="flex flex-wrap gap-1.5 mt-4">
           {project.techStack.slice(0, 4).map((t) => (
             <span
               key={t}
-              className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-medium"
+              className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-medium group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200"
             >
               {t}
             </span>
