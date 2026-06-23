@@ -9,10 +9,9 @@ import {
 } from "react";
 import {
   onAuthStateChanged,
-  signInWithRedirect,
-  getRedirectResult,
-  signOut,
+  signInWithCredential,
   GoogleAuthProvider,
+  signOut,
   type User,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -46,9 +45,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { auth, db } = getFirebaseApp();
     if (!auth || !db) { setLoading(false); return; }
 
-    getRedirectResult(auth).catch((e) =>
-      console.error("Redirect result error:", e)
-    );
+    // Handle server-side OAuth result: Google ID token in URL
+    const params = new URLSearchParams(window.location.search);
+    const googleIdToken = params.get("g_token");
+    const authError = params.get("auth_error");
+
+    if (authError) {
+      const messages: Record<string, string> = {
+        access_denied: "Sign-in was cancelled or denied.",
+        server_config: "Server auth not configured yet. Ask the developer to check setup.",
+        token_exchange: "Failed to complete sign-in (token exchange).",
+        no_id_token: "No ID token received from Google.",
+        server_error: "Server error during sign-in.",
+      };
+      alert(messages[authError] || "Sign-in failed: " + authError);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+
+    if (googleIdToken) {
+      window.history.replaceState({}, "", window.location.pathname);
+      signInWithCredential(auth, GoogleAuthProvider.credential(googleIdToken))
+        .then(() => console.log("Sign-in via server OAuth successful"))
+        .catch((e) => {
+          console.error("Server OAuth sign-in error:", e);
+          if (e?.code === "auth/unauthorized-domain") {
+            alert("Domain not authorized. Add it in Firebase Console > Authentication > Settings > Authorized domains.");
+          } else if (e?.code === "auth/operation-not-allowed") {
+            alert("Google sign-in not enabled. Enable it in Firebase Console > Authentication > Sign-in method.");
+          } else if (e?.code === "auth/invalid-credential") {
+            alert("Invalid Google credential. Make sure the same Firebase project is used for OAuth and client config.");
+          } else {
+            alert("Sign-in failed: " + (e?.message || "Unknown error"));
+          }
+        });
+    }
 
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
@@ -82,19 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsub();
   }, []);
 
-  const signInWithGoogle = async () => {
-    try {
-      const { auth } = getFirebaseApp();
-      if (!auth) {
-        alert("Firebase not configured. Check console for details.");
-        return;
-      }
-      const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
-    } catch (e: any) {
-      console.error("Sign-in error:", e);
-      alert("Sign-in failed: " + (e?.message || "Unknown error"));
-    }
+  const signInWithGoogle = () => {
+    window.location.href = "/api/auth/login";
   };
 
   const logout = async () => {
