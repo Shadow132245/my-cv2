@@ -16,7 +16,7 @@ export function useProjects(options?: { featured?: boolean; category?: string })
 
   useEffect(() => {
     const { db } = getFirebaseApp();
-    if (!db) return;
+    if (!db) { setLoading(false); return; }
     const constraints: any[] = [orderBy("order", "asc")];
     if (options?.featured) constraints.push(where("featured", "==", true));
     if (options?.category) constraints.push(where("category", "==", options.category));

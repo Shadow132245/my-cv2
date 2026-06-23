@@ -7,9 +7,10 @@ import { getFirebaseApp } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
 import { Input, TextArea } from "@/components/ui/Input";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 export function RequestPage() {
-  const { user, signInWithGoogle } = useAuth();
+  const { user, signInWithGoogle, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -30,7 +31,7 @@ export function RequestPage() {
     }
 
     const { db } = getFirebaseApp();
-    if (!db) { setError("Firebase not available"); return; }
+    if (!db) { setError("Firebase not configured yet."); return; }
 
     setSubmitting(true);
     try {
@@ -62,65 +63,81 @@ export function RequestPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16">
-      <h1 className="text-3xl md:text-4xl font-bold mb-2">Start a Project</h1>
-      <p className="text-gray-600 dark:text-gray-400 mb-8">
-        Tell me about your idea. I&apos;ll get back to you within 24 hours.
-      </p>
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-20 md:py-28">
+      <FadeIn>
+        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
+          Contact
+        </span>
+        <h1 className="text-4xl sm:text-5xl font-bold mt-2 mb-2">
+          Start a Project
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-10">
+          Tell me about your idea. I&apos;ll get back to you within 24 hours.
+        </p>
+      </FadeIn>
 
-      {!user && (
-        <div className="mb-8 p-4 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/20">
-          <p className="text-sm text-indigo-700 dark:text-indigo-300 mb-3">
-            Sign in with Google to track your project request and use the
-            real-time chat.
-          </p>
-          <Button size="sm" onClick={signInWithGoogle}>
-            Sign in with Google
-          </Button>
-        </div>
+      {!authLoading && !user && (
+        <FadeIn delay={100}>
+          <div className="mb-10 p-5 rounded-xl border border-indigo-200/50 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10">
+            <p className="text-sm text-indigo-700 dark:text-indigo-300 mb-3">
+              Sign in with Google to track your project and use the real-time chat.
+            </p>
+            <Button size="sm" onClick={signInWithGoogle}>
+              Sign in with Google
+            </Button>
+          </div>
+        </FadeIn>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name"
-        />
-        <Input
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
-        />
-        <Input
-          label="Project Type"
-          value={projectType}
-          onChange={(e) => setProjectType(e.target.value)}
-          placeholder="e.g. Web App, Desktop App, API, Mobile"
-        />
-        <Input
-          label="Budget"
-          value={budget}
-          onChange={(e) => setBudget(e.target.value)}
-          placeholder="e.g. $1,000 - $5,000"
-        />
-        <TextArea
-          label="Project Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Describe your project idea, requirements, and timeline..."
-        />
+      <FadeIn delay={150}>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+            />
+            <Input
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Project Type"
+              value={projectType}
+              onChange={(e) => setProjectType(e.target.value)}
+              placeholder="e.g. Web App, Desktop, API"
+            />
+            <Input
+              label="Budget Range"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              placeholder="e.g. $1,000 - $5,000"
+            />
+          </div>
+          <TextArea
+            label="Project Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe your project idea, requirements, and timeline..."
+          />
 
-        {error && (
-          <p className="text-sm text-red-500">{error}</p>
-        )}
+          {error && (
+            <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg">{error}</p>
+          )}
 
-        <Button type="submit" loading={submitting} size="lg">
-          Submit Request
-        </Button>
-      </form>
+          <div className="pt-2">
+            <Button type="submit" loading={submitting} size="lg">
+              Submit Request
+            </Button>
+          </div>
+        </form>
+      </FadeIn>
     </div>
   );
 }

@@ -42,41 +42,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { auth, db } = getFirebaseApp();
-    if (!auth || !db) { setLoading(false); return; }
+    try {
+      const { auth, db } = getFirebaseApp();
+      if (!auth || !db) { setLoading(false); return; }
 
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      if (firebaseUser) {
-        const ref = doc(db, "users", firebaseUser.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setProfile(snap.data() as UserProfile);
-        } else {
-          const newProfile: UserProfile = {
-            uid: firebaseUser.uid,
-            name: firebaseUser.displayName || "",
-            email: firebaseUser.email || "",
-            photoURL: firebaseUser.photoURL || "",
-            role: "client",
-            createdAt: Date.now(),
-          };
-          await setDoc(ref, newProfile);
-          setProfile(newProfile);
+      const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+        try {
+          setUser(firebaseUser);
+          if (firebaseUser) {
+            const ref = doc(db, "users", firebaseUser.uid);
+            const snap = await getDoc(ref);
+            if (snap.exists()) {
+              setProfile(snap.data() as UserProfile);
+            } else {
+              const newProfile: UserProfile = {
+                uid: firebaseUser.uid,
+                name: firebaseUser.displayName || "",
+                email: firebaseUser.email || "",
+                photoURL: firebaseUser.photoURL || "",
+                role: "client",
+                createdAt: Date.now(),
+              };
+              await setDoc(ref, newProfile);
+              setProfile(newProfile);
+            }
+          } else {
+            setProfile(null);
+          }
+        } catch (e) {
+          console.error("Auth state error:", e);
+        } finally {
+          setLoading(false);
         }
-      } else {
-        setProfile(null);
-      }
+      });
+      return () => unsub();
+    } catch (e) {
+      console.error("Auth init error:", e);
       setLoading(false);
-    });
-    return () => unsub();
+    }
   }, []);
 
   const signInWithGoogle = async () => {
-    const { auth } = getFirebaseApp();
-    if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      const { auth } = getFirebaseApp();
+      if (!auth) {
+        alert("Firebase not configured. Check console for details.");
+        return;
+      }
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (e: any) {
+      console.error("Sign-in error:", e);
+      if (e?.code === "auth/popup-blocked") {
+        alert("Popup was blocked by your browser. Please allow popups for this site.");
+      } else if (e?.code === "auth/unauthorized-domain") {
+        alert("This domain is not authorized in Firebase. Add it in Firebase Console > Authentication > Settings > Authorized domains.");
+      } else if (e?.code === "auth/operation-not-allowed") {
+        alert("Google sign-in is not enabled. Enable it in Firebase Console > Authentication > Sign-in method.");
+      } else {
+        alert("Sign-in failed: " + (e?.message || "Unknown error"));
+      }
+    }
   };
 
   const logout = async () => {

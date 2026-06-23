@@ -12,37 +12,40 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-indigo-950" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-br from-indigo-400/20 to-purple-400/20 rounded-full blur-3xl" />
-        <div className="max-w-6xl mx-auto px-4 py-32 md:py-48 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-950 dark:to-indigo-950" />
+        <div className="absolute top-0 -left-40 w-96 h-96 bg-indigo-300/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 -right-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-32 md:py-48 relative">
           <FadeIn>
-            <div className="inline-block px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-medium mb-4">
-              Full-Stack Developer
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/80 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-medium mb-6 border border-indigo-200/50 dark:border-indigo-700/50">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+              Available for new projects
             </div>
           </FadeIn>
-          <FadeIn>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
-              Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Hassan
+          <FadeIn delay={100}>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-tight mb-6">
+              Full-stack developer
+              <br />
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                crafting digital products
               </span>
             </h1>
           </FadeIn>
-          <FadeIn>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed max-w-2xl">
-              I build professional web applications, desktop tools, and APIs
-              using Python, TypeScript, React, and Rust. Focused on clean
-              architecture and user experience.
+          <FadeIn delay={200}>
+            <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
+              I build web applications, desktop tools, and APIs using Python,
+              TypeScript, React, and Rust. Focused on clean architecture,
+              performance, and user experience.
             </p>
           </FadeIn>
-          <FadeIn>
-            <div className="flex gap-4">
+          <FadeIn delay={300}>
+            <div className="flex flex-wrap gap-4">
               <Link href="/projects">
                 <Button size="lg">View Projects</Button>
               </Link>
               <Link href="/request">
                 <Button variant="secondary" size="lg">
-                  Hire Me
+                  Get in Touch
                 </Button>
               </Link>
             </div>
@@ -50,49 +53,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-t border-gray-200 dark:border-gray-800 py-20">
-        <div className="max-w-6xl mx-auto px-4">
+      <section className="py-20 md:py-28">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <FadeIn>
-            <div className="flex items-center justify-between mb-10">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
               <div>
-                <h2 className="text-3xl font-bold">Featured Projects</h2>
-                <p className="text-gray-500 dark:text-gray-400 mt-1">
-                  Some of my recent work
-                </p>
+                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
+                  Portfolio
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-bold mt-2">
+                  Featured Projects
+                </h2>
               </div>
               <Link
                 href="/projects"
-                className="hidden sm:inline-flex items-center text-sm font-medium text-indigo-600 hover:underline"
+                className="mt-2 sm:mt-0 inline-flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
               >
-                View all projects →
+                View all projects
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
           </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {projects.slice(0, 3).map((p, i) => (
               <FadeIn key={p.id} delay={i * 100}>
                 <ProjectCard project={p} index={i} />
               </FadeIn>
             ))}
           </div>
-          <FadeIn>
-            <div className="mt-8 text-center sm:hidden">
-              <Link href="/projects">
-                <Button variant="secondary">View all projects</Button>
-              </Link>
-            </div>
-          </FadeIn>
         </div>
       </section>
 
-      <section className="relative border-t border-gray-200 dark:border-gray-800 py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-indigo-50/50 to-transparent dark:from-indigo-950/20" />
-        <div className="max-w-6xl mx-auto px-4 text-center relative">
+      <section className="relative py-20 md:py-28 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/50 to-transparent dark:from-indigo-950/10" />
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center relative">
           <FadeIn>
-            <h2 className="text-3xl font-bold mb-3">Let&apos;s Work Together</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-lg mx-auto">
-              Have a project in mind? I&apos;m always open to new opportunities
-              and collaborations.
+            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
+              Collaborate
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-2 mb-4">
+              Let&apos;s work together
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
+              Have a project in mind? I&apos;m always open to discussing new
+              opportunities and bringing ideas to life.
             </p>
             <Link href="/request">
               <Button size="lg">Start a Project</Button>

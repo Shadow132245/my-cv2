@@ -18,18 +18,18 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 animate-pulse space-y-4">
-        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-        <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-2xl" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 md:py-28 animate-pulse space-y-4">
+        <div className="h-8 bg-gray-100 dark:bg-gray-800 rounded w-1/2" />
+        <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-2xl" />
+        <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-full" />
+        <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-3/4" />
       </div>
     );
   }
 
   if (!project) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 md:py-28 text-center">
         <h1 className="text-3xl font-bold mb-2">Project Not Found</h1>
         <p className="text-gray-500">The project you&apos;re looking for doesn&apos;t exist.</p>
       </div>
@@ -37,20 +37,22 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-20">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 md:py-28">
       <FadeIn>
-        <div className="inline-block px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-medium mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/80 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-medium mb-4 border border-indigo-200/50 dark:border-indigo-700/50">
           {project.category}
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">{project.title}</h1>
+        <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4">
+          {project.title}
+        </h1>
       </FadeIn>
 
       <FadeIn delay={100}>
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-10">
           {project.techStack.map((t) => (
             <span
               key={t}
-              className="text-xs px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium"
+              className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium"
             >
               {t}
             </span>
@@ -58,30 +60,34 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
         </div>
       </FadeIn>
 
-      {project.images.length > 0 && (
-        <FadeIn delay={150}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-            {project.images.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt={`${project.title} screenshot ${i + 1}`}
-                className="rounded-2xl border border-gray-200 dark:border-gray-800 shadow-lg"
-              />
-            ))}
-          </div>
-        </FadeIn>
-      )}
-
-      <FadeIn delay={200}>
+      <FadeIn delay={150}>
         <div className="prose prose-gray dark:prose-invert max-w-none mb-10">
-          <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-            {project.longDescription || project.description}
-          </p>
+          {project.longDescription.split("\n").map((line, i) => {
+            if (line.startsWith("**") && line.endsWith("**")) {
+              return (
+                <h3 key={i} className="text-lg font-semibold mt-6 mb-2 text-gray-900 dark:text-gray-100">
+                  {line.replace(/\*\*/g, "")}
+                </h3>
+              );
+            }
+            if (line.startsWith("•")) {
+              return (
+                <li key={i} className="text-sm text-gray-600 dark:text-gray-400 ml-4">
+                  {line.replace("• ", "")}
+                </li>
+              );
+            }
+            if (line.trim() === "") return <br key={i} />;
+            return (
+              <p key={i} className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                {line}
+              </p>
+            );
+          })}
         </div>
       </FadeIn>
 
-      <FadeIn delay={250}>
+      <FadeIn delay={200}>
         <div className="flex flex-wrap gap-3">
           {project.githubUrl && (
             <a
@@ -99,7 +105,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/25"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
               Live Demo
@@ -111,7 +117,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
               href={d.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/25"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/20"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               {d.label}
