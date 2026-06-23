@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsub();
   }, []);
 
-  const signInWithGoogle = () => {
+  const signInWithGoogle = async () => {
     window.location.href = "/api/auth/login";
   };
 
