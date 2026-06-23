@@ -10,6 +10,7 @@ import {
 import {
   onAuthStateChanged,
   signInWithRedirect,
+  getRedirectResult,
   signOut,
   GoogleAuthProvider,
   type User,
@@ -42,44 +43,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const { auth, db } = getFirebaseApp();
-      if (!auth || !db) { setLoading(false); return; }
+    const { auth, db } = getFirebaseApp();
+    if (!auth || !db) { setLoading(false); return; }
 
-      const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-        try {
-          setUser(firebaseUser);
-          if (firebaseUser) {
-            const ref = doc(db, "users", firebaseUser.uid);
-            const snap = await getDoc(ref);
-            if (snap.exists()) {
-              setProfile(snap.data() as UserProfile);
-            } else {
-              const newProfile: UserProfile = {
-                uid: firebaseUser.uid,
-                name: firebaseUser.displayName || "",
-                email: firebaseUser.email || "",
-                photoURL: firebaseUser.photoURL || "",
-                role: "client",
-                createdAt: Date.now(),
-              };
-              await setDoc(ref, newProfile);
-              setProfile(newProfile);
-            }
-          } else {
-            setProfile(null);
-          }
-        } catch (e) {
-          console.error("Auth state error:", e);
-        } finally {
-          setLoading(false);
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          console.log("Redirect sign-in successful", result.user.email);
         }
+      })
+      .catch((e) => {
+        console.error("Redirect result error:", e);
       });
-      return () => unsub();
-    } catch (e) {
-      console.error("Auth init error:", e);
-      setLoading(false);
-    }
+
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      try {
+        setUser(firebaseUser);
+        if (firebaseUser) {
+          const ref = doc(db, "users", firebaseUser.uid);
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            setProfile(snap.data() as UserProfile);
+          } else {
+            const newProfile: UserProfile = {
+              uid: firebaseUser.uid,
+              name: firebaseUser.displayName || "",
+              email: firebaseUser.email || "",
+              photoURL: firebaseUser.photoURL || "",
+              role: "client",
+              createdAt: Date.now(),
+            };
+            await setDoc(ref, newProfile);
+            setProfile(newProfile);
+          }
+        } else {
+          setProfile(null);
+        }
+      } catch (e) {
+        console.error("Auth state error:", e);
+      } finally {
+        setLoading(false);
+      }
+    });
+    return () => unsub();
   }, []);
 
   const signInWithGoogle = async () => {
